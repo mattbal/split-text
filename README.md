@@ -100,7 +100,7 @@ document.fonts.ready.then(() => {
       animate(
         splitNode.words,
         { opacity: [0, 1], y: [20, 0] },
-        { type: 'tween', duration: 1, delayChildren: stagger(0.1) }
+        { type: 'tween', duration: 1, delay: stagger(0.1) }
       );
     }
   });
@@ -137,7 +137,7 @@ export default function AnimatedComponent() {
             animate(
               splitNode.words,
               { opacity: [0, 1], y: [20, 0] },
-              { type: 'tween', duration: 1, delayChildren: stagger(0.1) }
+              { type: 'tween', duration: 1, delay: stagger(0.1) }
             );
           }
         });
