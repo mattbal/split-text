@@ -1,0 +1,56 @@
+{
+  "name": "@mattbal/split-text",
+  "version": "1.0.0",
+  "description": "A JavaScript library that splits text into characters, words, or lines for animation",
+  "keywords": [
+    "javascript",
+    "js",
+    "split",
+    "text",
+    "html"
+  ],
+  "license": "MIT",
+  "author": "Matt Balint",
+  "homepage": "https://github.com/mattbal/split-text",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattbal/split-text.git"
+  },
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "clean": "shx rm -rf coverage dist",
+    "lint": "eslint src",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "npm run lint && npx playwright test --ui",
+    "release": "npm run clean && npm run build",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.1.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-jsdoc": "^50.6.14",
+    "eslint-plugin-n": "^17.21.3",
+    "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "shx": "^0.4.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0"
+  },
+  "dependencies": {
+    "zod": "^4.0.13"
+  }
+}
