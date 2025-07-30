@@ -14,7 +14,7 @@
   "homepage": "https://github.com/mattbal/split-text",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mattbal/split-text.git"
+    "url": "https://github.com/mattbal/split-text.git"
   },
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
