@@ -12,6 +12,6 @@ All notable changes will be documented in this file according to [Semantic Versi
 
 - Added type export for `SplitNode`
 
-## [v1.1.1](https://github.com/mattbal/split-text/tree/v1.1.1) (2025-07-30)
+## [v1.2.0](https://github.com/mattbal/split-text/tree/v1.2.0) (2025-07-30)
 
 - Fixed a bug that didn't allow support for passing in an Element
