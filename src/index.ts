@@ -1,6 +1,6 @@
 import { Options, optionsSchema } from "./types.ts";
 
-interface SplitNode {
+export interface SplitNode {
   lines?: Element[];
   words?: Element[];
   chars?: Element[];
