@@ -19,20 +19,11 @@ const metaMap = new WeakMap<HTMLElement, ElementMetadata>();
  * @param target - The target node(s)
  * @param rawOptions - Raw options for configuring split-text
  */
-export default function splitText(
-  target: HTMLElement | NodeListOf<HTMLElement>,
-  rawOptions?: Options,
-) {
+export default function splitText(target: Element | NodeListOf<Element>, rawOptions?: Options) {
   // Throw error if options is not valid
   const options = optionsSchema.parse(rawOptions);
 
-  if (!(target instanceof HTMLElement || target instanceof NodeList)) {
-    throw new Error(
-      "Error: Tried to call splitText with an invalid target. Target must be of type HTMLElement or NodeList.",
-    );
-  }
-
-  const elements = target instanceof HTMLElement ? [target] : Array.from(target);
+  const elements = target instanceof Element ? [target] : Array.from(target);
 
   return elements
     .map((el) => {

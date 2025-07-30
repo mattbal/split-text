@@ -12,43 +12,41 @@ const metaMap = new WeakMap();
  * @param rawOptions - Raw options for configuring split-text
  */
 function splitText(target, rawOptions) {
-    // Throw error if options is not valid
     const options = {
         locale: 'en',
         ariaLabel: true,
         resplit: true,
         ...rawOptions,
     }
-    if (!(target instanceof HTMLElement || target instanceof NodeList)) {
-        throw new Error("Error: Tried to call splitText with an invalid target. Target must be of type HTMLElement or NodeList.");
-    }
-    const elements = target instanceof HTMLElement ? [target] : Array.from(target);
-    elements.forEach((el) => {
-        if (!(el instanceof HTMLElement))
-            return;
-        if (!metaMap.has(el)) {
-            const observer = new ResizeObserver((entries) => {
-                for (const entry of entries) {
-                    const width = entry.contentRect.width;
-                    const metadata = metaMap.get(el);
-                    if (!metadata)
-                        return;
-                    if (width !== metadata.lastWidth && options.resplit) {
-                        metadata.lastWidth = width;
-                        split(el, options, metadata);
+    const elements = target instanceof Element ? [target] : Array.from(target);
+    return elements
+        .map((el) => {
+            if (!(el instanceof HTMLElement))
+                return null;
+            if (!metaMap.has(el)) {
+                const observer = new ResizeObserver((entries) => {
+                    for (const entry of entries) {
+                        const width = entry.contentRect.width;
+                        const metadata = metaMap.get(el);
+                        if (!metadata)
+                            return;
+                        if (width !== metadata.lastWidth && options.resplit) {
+                            metadata.lastWidth = width;
+                            split(el, options, metadata);
+                        }
                     }
-                }
-            });
-            metaMap.set(el, {
-                originalHTML: el.innerHTML,
-                lastWidth: el.getBoundingClientRect().width,
-                observer,
-            });
-            observer.observe(el);
-        }
-        const metadata = metaMap.get(el);
-        split(el, options, metadata);
-    });
+                });
+                metaMap.set(el, {
+                    originalHTML: el.innerHTML,
+                    lastWidth: el.getBoundingClientRect().width,
+                    observer,
+                });
+                observer.observe(el);
+            }
+            const metadata = metaMap.get(el);
+            return split(el, options, metadata);
+        })
+        .filter((splitNode) => splitNode !== null);
 }
 /**
  * Split an element
@@ -58,11 +56,11 @@ function splitText(target, rawOptions) {
  */
 function split(el, opts, metadata) {
     if (!el.childNodes)
-        return;
+        return null;
     // reset to original
     el.innerHTML = metadata.originalHTML;
     if (!el.textContent)
-        return;
+        return null;
     const nodesToBeAdded = [];
     if (opts.split.lines) {
         const textRectsTree = getTextRectsTree(el);
@@ -110,6 +108,35 @@ function split(el, opts, metadata) {
     if (opts.ariaLabel) {
         el.setAttribute("aria-label", el.textContent);
     }
+    const splitNode = {};
+    if (opts.split.lines) {
+        splitNode.lines = Array.from(el.children);
+        if (opts.split.words) {
+            splitNode.words = splitNode.lines.flatMap((node) => Array.from(node.children));
+            if (opts.split.chars) {
+                splitNode.chars = splitNode.words.flatMap((node) => Array.from(node.children));
+            }
+        }
+        else {
+            if (opts.split.chars) {
+                splitNode.chars = splitNode.lines.flatMap((node) => Array.from(node.children));
+            }
+        }
+    }
+    else {
+        if (opts.split.words) {
+            splitNode.words = Array.from(el.children);
+            if (opts.split.chars) {
+                splitNode.chars = splitNode.words.flatMap((node) => Array.from(node.children));
+            }
+        }
+        else {
+            if (opts.split.chars) {
+                splitNode.words = Array.from(el.children);
+            }
+        }
+    }
+    return splitNode;
 }
 /**
  * Get the tree with TextRects in Text Nodes.
@@ -195,8 +222,7 @@ function clearBuffer(buffer, lines, tag, className) {
     }
     const index = lines.length;
     const newSpan = createWrapper(text, index, tag, className);
-    newSpan.style.display = "block";
-    newSpan.style.width = "100%";
+    newSpan.style.display = "inline-block";
     lines.push(newSpan);
     buffer.length = 0; // clear array
 }
@@ -251,7 +277,11 @@ function splitBySegment(nodes, segmenter, tag, className, depth) {
     const processNode = (node) => {
         const text = node.textContent;
         const segments = Array.from(segmenter.segment(text));
-        const newNodes = segments.map(({ segment }, index) => createWrapper(segment, index, tag, className));
+        const newNodes = segments.map(({ segment }, index) => {
+            const newNode = createWrapper(segment, index, tag, className);
+            newNode.style.display = "inline-block";
+            return newNode;
+        });
         node.replaceChildren(...newNodes);
     };
     nodes.forEach((child) => {

@@ -6,11 +6,11 @@
     <title>Document</title>
   </head>
   <body>
-    <h1 style="white-space: pre-wrap">The quick brown fox jumped over the fence</h1>
+    <h1 style="white-space: pre-wrap" class="split">The quick brown fox jumped over the fence</h1>
     <script src="./index.js""></script>
     <script>
-      const h1 = document.querySelector('h1');
-        splitText(h1, { split: { lines: true, words: true }, resplit: true, });
+      const h1 = document.querySelector('.split');
+      splitText(h1, { split: { lines: true, words: true }, resplit: true, });
     </script>
   </body>
 </html>
