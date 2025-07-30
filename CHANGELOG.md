@@ -16,6 +16,6 @@ All notable changes will be documented in this file according to [Semantic Versi
 
 - Fixed a bug that didn't allow support for passing in an Element
 
-## [v1.3.0](https://github.com/mattbal/split-text/tree/v1.2.0) (2025-07-30)
+## [v1.3.0](https://github.com/mattbal/split-text/tree/v1.3.0) (2025-07-30)
 
 - Fixed a bug in github link in package.json
