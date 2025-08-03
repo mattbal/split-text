@@ -20,6 +20,6 @@ All notable changes will be documented in this file according to [Semantic Versi
 
 - Fixed a bug in github link in package.json
 
-## [v1.4.0](https://github.com/mattbal/split-text/tree/v1.3.0) (2025-08-02)
+## [v1.4.0](https://github.com/mattbal/split-text/tree/v1.4.0) (2025-08-02)
 
 - Added `stop` so that you can stop the Resize Observer if calling `splitText` in a React `useEffect` hook
