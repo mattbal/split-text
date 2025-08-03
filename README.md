@@ -94,8 +94,8 @@ import { animate, stagger } from "motion";
 
 document.fonts.ready.then(() => {
   const nodes = document.querySelectorAll(".split");
-  const splitNodes = splitText(nodes, { split: { words: true }, locale: "en-US" });
-  splitNodes.forEach((splitNode) => {
+  const result = splitText(nodes, { split: { words: true }, locale: "en-US" });
+  result.splitNodes.forEach((splitNode) => {
     if (splitNode.words) {
       animate(
         splitNode.words,
@@ -116,9 +116,11 @@ document.fonts.ready.then(() => {
 ```jsx
 import { useEffect useRef } from "react";
 import { animate, stagger } from "motion/react";
+import splitText, { SplitTextResult } from "@mattbal/split-text";
 
 export default function AnimatedComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const splitRef = useRef<SplitTextResult | null>(null);
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -128,11 +130,13 @@ export default function AnimatedComponent() {
 
       const nodes = containerRef.current.querySelectorAll('.split');
       if (nodes) {
-        const splitNodes = splitText(node, {
+        const result = splitText(node, {
           split: { words: true },
         });
 
-        splitNodes.forEach((splitNode) => {
+        splitRef.current = result;
+
+        result.splitNodes.forEach((splitNode) => {
           if (splitNode.words) {
             animate(
               splitNode.words,
@@ -143,6 +147,10 @@ export default function AnimatedComponent() {
         });
       }
     });
+
+    return () => {
+      splitRef.current?.stop(); // stop the Resize Observer
+    };
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 {
   "name": "@mattbal/split-text",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A JavaScript library that splits text into characters, words, or lines for animation",
   "keywords": [
     "javascript",

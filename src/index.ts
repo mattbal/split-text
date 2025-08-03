@@ -6,6 +6,11 @@ export interface SplitNode {
   chars?: Element[];
 }
 
+export interface SplitTextResult {
+  splitNodes: SplitNode[];
+  stop: () => void;
+}
+
 interface ElementMetadata {
   originalHTML: string;
   lastWidth: number;
@@ -19,13 +24,17 @@ const metaMap = new WeakMap<HTMLElement, ElementMetadata>();
  * @param target - The target node(s)
  * @param rawOptions - Raw options for configuring split-text
  */
-export default function splitText(target: Element | NodeListOf<Element>, rawOptions?: Options) {
+export default function splitText(
+  target: Element | NodeListOf<Element>,
+  rawOptions?: Options,
+): SplitTextResult {
   // Throw error if options is not valid
   const options = optionsSchema.parse(rawOptions);
 
   const elements = target instanceof Element ? [target] : Array.from(target);
 
-  return elements
+  const observers: ResizeObserver[] = [];
+  const splitNodes = elements
     .map((el) => {
       if (!(el instanceof HTMLElement)) return null;
 
@@ -49,12 +58,20 @@ export default function splitText(target: Element | NodeListOf<Element>, rawOpti
         });
 
         observer.observe(el);
+        observers.push(observer);
       }
 
       const metadata = metaMap.get(el)!;
       return split(el, options, metadata);
     })
     .filter((splitNode) => splitNode !== null);
+
+  return {
+    splitNodes,
+    stop() {
+      observers.forEach((observer) => observer.disconnect());
+    },
+  };
 }
 
 /**
@@ -211,6 +228,8 @@ function getTextRectsTree(node: Node) {
     // Bucket rects by rounded top value
     const linesMap: Map<number, Fragment[]> = new Map();
     fragments.forEach((frag) => {
+      if (!frag?.rect) return;
+
       const lineKey = Math.round(frag.rect.top / 5) * 5; // bucket by 5px groups
       const line = linesMap.get(lineKey);
       if (line) {
